@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>De Wekelijkse Digitale Weerbaarheid Quiz — Week 02-2026</title>
+  <style>
+    :root { --maxw: 960px; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Apple Color Emoji", "Segoe UI Emoji"; line-height: 1.5; margin: 0; background: #0b1220; color: #e8eef8; }
+    a { color: inherit; }
+    .wrap { max-width: var(--maxw); margin: 0 auto; padding: 24px; }
+    header { padding: 16px 0 8px; }
+    h1 { font-size: clamp(1.4rem, 2.5vw, 2rem); margin: 0 0 4px; }
+    .sub { opacity: .8; font-size: .95rem; margin-bottom: 16px; }
+    .card { background: #121a2b; border: 1px solid #29324a; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,.35); }
+    .card .in { padding: 20px; }
+    .actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-top: 16px; }
+    button { cursor: pointer; border: 0; padding: 10px 16px; border-radius: 12px; font-weight: 600; }
+    .btn-primary { background: #3a86ff; color: white; }
+    .btn-secondary { background: #2a334a; color: #e8eef8; }
+    .btn-danger { background: #ef476f; color: white; }
+    .muted { opacity: .75; }
+
+    .q { padding: 18px; border: 1px solid #233153; border-radius: 12px; margin-bottom: 16px; background: #0f1526; }
+    .q h3 { margin: 0 0 6px; font-size: 1.05rem; }
+    .q .meta { font-size: .85rem; opacity: .8; margin-bottom: 8px; }
+    .options { display: grid; grid-template-columns: 1fr; gap: 8px; }
+    label.opt { display: grid; grid-template-columns: 28px 1fr; gap: 8px; align-items: start; padding: 10px; border-radius: 10px; border: 1px solid #223153; background: #0c1222; }
+    input[type="radio"] { transform: translateY(2px); }
+    .result { margin-top: 20px; padding: 16px; border-radius: 12px; border: 1px solid #2a3b66; background: #0c1426; }
+    .stat { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px; margin-top: 8px; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: .8rem; font-weight: 700; }
+    .ok { background: #144d2a; color: #a6f4c5; }
+    .ko { background: #5b1d2b; color: #fec5d0; }
+    .warn { background: #42340b; color: #ffe5a1; }
+    .perq { border-top: 1px dashed #2d3d64; padding-top: 12px; margin-top: 12px; }
+    .perq h4 { margin: 0 0 6px; font-size: .95rem; }
+    .key { opacity: .9; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    footer { margin: 32px 0; opacity: .7; font-size: .9rem; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>De Wekelijkse Digitale Weerbaarheid Quiz: Week 02-2026</h1>
+      <div class="sub">Periode: 5 t/m 11 januari 2026 · 20 meerkeuzevragen · bron: Journaals Cybercrimeinfo.</div>
+    </header>
+
+    <section class="card">
+      <div class="in">
+        <div id="quiz"></div>
+        <div class="actions">
+          <button id="submit" class="btn-primary">Inleveren en nakijken</button>
+          <button id="reset" class="btn-secondary">Opnieuw beginnen</button>
+          <span class="muted" id="progress"></span>
+        </div>
+        <div id="result" class="result" hidden></div>
+      </div>
+    </section>
+
+    <footer>
+      © Week 02-2026 Cybercrimeinfo quiz
+    </footer>
+  </div>
+
+  <script>
+    // ————————————————
+    //  Quiz data (Week 02-2026)
+    // ————————————————
+    const QUESTIONS = [
+      {
+        cat: "Kritieke Kwetsbaarheden",
+        q: "Welke specifieke kwetsbaarheid in het Moodle-platform (CVE-2025-26529) stelt aanvallers in staat om via een Stored Cross-Site Scripting (XSS) aanval beheersessies over te nemen?",
+        opts: {
+          A: "Onvoldoende encryptie van de broncode in de database.",
+          B: "Gebrek aan data-reiniging in de live-logfunctionaliteit van de site-administratie.",
+          C: "Een fout in het validatieproces van geüploade cursusmaterialen.",
+          D: "Een zwakte in de multifactorauthenticatie van de beheerdersinterface."
+        },
+        a: "B"
+      },
+      {
+        cat: "Fraude en Social Engineering",
+        q: "Bij een recente arrestatie in Nijmegen werden drie personen aangehouden voor oplichting van een kwetsbare inwoner; welke specifieke werkwijze hanteerden zij?",
+        opts: {
+          A: "Het verspreiden van ransomware via malafide bijlagen in e-mails.",
+          B: "Het telefonisch benaderen van het slachtoffer onder de valse identiteit van politiemedewerkers.",
+          C: "Het uitvoeren van een 'Vriend-in-Nood'-fraude via WhatsApp.",
+          D: "Het onderscheppen van bankgegevens via een nagemaakte bank-app."
+        },
+        a: "B"
+      },
+      {
+        cat: "Geopolitiek en Cyberoorlog",
+        q: "Hoeveel bedroeg de premie die de Oekraïense inlichtingendienst (DIU) wist te onderscheppen door de dood van commandant Denis Kapustin in scène te zetten?",
+        opts: {
+          A: "100.000 dollar.",
+          B: "250.000 dollar.",
+          C: "500.000 dollar.",
+          D: "1.000.000 dollar."
+        },
+        a: "C"
+      },
+      {
+        cat: "Innovatie en Infrastructuur",
+        q: "Welke technologische innovatie gebruikt het nieuwe Europese grondstation op Groenland om de cyberweerbaarheid van satellietcommunicatie te vergroten en 'single points of failure' te elimineren?",
+        opts: {
+          A: "Kwantum-encryptie via onderzeese kabels.",
+          B: "Optische lasercommunicatie voor dataoverdracht.",
+          C: "Een gedecentraliseerd netwerk op basis van blockchain.",
+          D: "AI-gestuurde storingsdetectie in radiosignalen."
+        },
+        a: "B"
+      },
+      {
+        cat: "Datalekken",
+        q: "Welke hoeveelheid gevoelige engineeringdata, waaronder MicroStation-ontwerpbestanden en LiDAR-puntenwolken, werd door een cybercrimineel buitgemaakt bij het bureau Pickett and Associates?",
+        opts: {
+          A: "50 gigabyte.",
+          B: "139 gigabyte.",
+          C: "277 gigabyte.",
+          D: "1 terabyte."
+        },
+        a: "B"
+      },
+      {
+        cat: "Geopolitiek en Cyberoorlog",
+        q: "In het jaar 2025 werd de Taiwanese vitale infrastructuur dagelijks geconfronteerd met een recordaantal Chinese inbraakpogingen; hoeveel bedroeg dit daggemiddelde?",
+        opts: {
+          A: "1,2 miljoen aanvallen.",
+          B: "2,1 miljoen aanvallen.",
+          C: "2,63 miljoen aanvallen.",
+          D: "5,4 miljoen aanvallen."
+        },
+        a: "C"
+      },
+      {
+        cat: "Malware en Tools",
+        q: "De malware 'VVS Stealer', die via Telegram wordt verhandeld, is technisch ontworpen om specifiek sessies te kapen van welke applicatie?",
+        opts: {
+          A: "Signal via PowerShell-scripts.",
+          B: "Discord door middel van het Chrome DevTools Protocol.",
+          C: "Microsoft Teams via DLL side-loading.",
+          D: "Viber via de injectie van Remcos RAT."
+        },
+        a: "B"
+      },
+      {
+        cat: "Crypto en Phishing",
+        q: "Welke deadline werd in januari 2026 door aanvallers gebruikt in een phishingcampagne gericht op MetaMask-gebruikers om hen onder tijdsdruk hun herstelzin afhandig te maken?",
+        opts: {
+          A: "1 januari 2026.",
+          B: "4 januari 2026.",
+          C: "10 januari 2026.",
+          D: "1 februari 2026."
+        },
+        a: "B"
+      },
+      {
+        cat: "Desinformatie en Nepnieuws",
+        q: "Tien personen werden in Frankrijk veroordeeld tot celstraffen en boetes vanwege hun aandeel in een online lastercampagne tegen Brigitte Macron; wat hield deze desinformatie in?",
+        opts: {
+          A: "Zij claimden dat zij staatsgeheimen had gelekt naar Rusland.",
+          B: "Zij verspreidden de complottheorie dat zij als man geboren zou zijn.",
+          C: "Zij beschuldigden haar van financiële corruptie bij de overheid.",
+          D: "Zij suggereerden dat zij de verkiezingen had gemanipuleerd met AI."
+        },
+        a: "B"
+      },
+      {
+        cat: "Ransomware en Datalekken",
+        q: "Forensisch onderzoek naar een aanval door de ransomwaregroep Qilin bij Covenant Health wees uit dat het datalek aanzienlijk groter was dan aanvankelijk gedacht; hoeveel personen bleken uiteindelijk getroffen?",
+        opts: {
+          A: "7.864 personen.",
+          B: "150.000 personen.",
+          C: "478.188 personen.",
+          D: "1,35 miljoen personen."
+        },
+        a: "C"
+      },
+      {
+        cat: "Kritieke Kwetsbaarheden",
+        q: "Onderzoekers van Cyera Research Labs identificeerden een kritiek lek in het n8n-platform (CVE-2025-68668) dat een sandbox-bypass mogelijk maakt; welke codenaam kreeg deze kwetsbaarheid?",
+        opts: {
+          A: "Ni8mare.",
+          B: "N8scape.",
+          C: "PythonGate.",
+          D: "MongoBleed."
+        },
+        a: "B"
+      },
+      {
+        cat: "Social Engineering",
+        q: "In de Europese hotelsector is een social engineering-campagne actief genaamd 'ClickFix'; hoe worden medewerkers hierbij specifiek misleid?",
+        opts: {
+          A: "Via een valse update voor de pinautomaten bij de receptie.",
+          B: "Via een nagemaakt Windows Blue Screen of Death (BSOD) scherm met 'oplossingsinstructies'.
+          C: "Via een telefoontje van een zogenaamde IT-medewerker van Booking.com.",
+          D: "Via een QR-code op een fysieke brief van een ontevreden gast."
+        },
+        a: "B"
+      },
+      {
+        cat: "Privacy en Encryptie",
+        q: "Welk privacyrisico identificeerden onderzoekers met betrekking tot de architectuur van de end-to-end-encryptie van WhatsApp?",
+        opts: {
+          A: "De encryptie kan worden omzeild door een brute-force aanval op de servers.",
+          B: "Unieke sessie-informatie lekt metadata waarmee het besturingssysteem van de gebruiker kan worden geïdentificeerd.",
+          C: "Chatgeschiedenissen worden onversleuteld opgeslagen in iCloud- of Google Drive-backups.",
+          D: "De One-Time PK ID stelt derden in staat om privégesprekken live mee te luisteren."
+        },
+        a: "B"
+      },
+      {
+        cat: "Trends en Strategie",
+        q: "Wat wordt in de moderne cybersecurity-strategie bedoeld met de term 'identity dark matter'?",
+        opts: {
+          A: "Gestolen identiteiten die uitsluitend op het dark web worden verhandeld.",
+          B: "Menselijke en niet-menselijke identiteiten (zoals bots en API's) die buiten het directe toezicht van IT-beheerders vallen.",
+          C: "Geanonimiseerde gebruikersprofielen die door AI-modellen worden gegenereerd.",
+          D: "Slapende accounts van medewerkers die de organisatie reeds hebben verlaten."
+        },
+        a: "B"
+      },
+      {
+        cat: "AI en Phishing",
+        q: "Volgens Mariusz Kujawski (Asseco Group) is de succesratio van phishingcampagnes drastisch gestegen door de inzet van AI; welk doorklikpercentage wordt nu behaald?",
+        opts: {
+          A: "12 procent.",
+          B: "35 procent.",
+          C: "54 procent.",
+          D: "82 procent."
+        },
+        a: "C"
+      },
+      {
+        cat: "Beleid en Handhaving",
+        q: "Stan Duijf, hoofd operatiën cyber van de politie, pleit voor een radicale omslag in de aanpak van cybercrime; met welk misdrijf vergelijkt hij de benodigde urgentie?",
+        opts: {
+          A: "Grootschalige drugshandel.",
+          B: "Een liquidatie op straat.",
+          C: "Een gewapende bankoverval.",
+          D: "Terroristische dreigingen in de fysieke wereld."
+        },
+        a: "B"
+      },
+      {
+        cat: "Hacktivisme en Sabotage",
+        q: "Welke groepering eiste de verantwoordelijkheid op voor de sabotage van het elektriciteitsnet in Berlijn, die zij richtten tegen de 'fossiele economie' en datacenters voor AI?",
+        opts: {
+          A: "Scattered Lapsus$ Hunters.",
+          B: "Vulkangruppe.",
+          C: "Crimson Collective.",
+          D: "TridentLocker."
+        },
+        a: "B"
+      },
+      {
+        cat: "Ransomware Technieken",
+        q: "De ransomware 'CrazyHunter' hanteert een specifiek versleutelingspatroon om detectie door monitoringsoftware te bemoeilijken; wat is dit patroon?",
+        opts: {
+          A: "Het versleutelen van uitsluitend de eerste 8 megabyte van elk bestand.",
+          B: "Een 1:2-ratio waarbij één byte wordt versleuteld en de volgende twee bytes ongemoeid blijven.",
+          C: "Het willekeurig versleutelen van fragmenten op basis van de systeemtijd.",
+          D: "Het gebruik van steganografie om de versleutelde payload in BMP-bestanden te verbergen."
+        },
+        a: "B"
+      },
+      {
+        cat: "IoT en Medische Tech",
+        q: "Voor welk medisch hulpmiddel werd een kritieke bluetooth-kwetsbaarheid (CVE-2025-14346) gemeld die volledige overname van de besturing zonder authenticatie mogelijk maakt?",
+        opts: {
+          A: "Slimme insulinepompen van Medtronic.",
+          B: "Elektrische rolstoelen van de fabrikant Whill (modellen C2 en F).",
+          C: "App-gestuurde gehoorapparaten van Phonak.",
+          D: "Draagbare pacemakers met externe monitoring."
+        },
+        a: "B"
+      },
+      {
+        cat: "Datalekken",
+        q: "Hoeveel unieke records claimt een hacker te hebben buitgemaakt bij mediaconcern Condé Nast (moederbedrijf van Wired, Vogue en The New Yorker)?",
+        opts: {
+          A: "2,3 miljoen records.",
+          B: "10 miljoen records.",
+          C: "40 miljoen records.",
+          D: "100 miljoen records."
+        },
+        a: "C"
+      }
+    ];
+
+    // ————————————————
+    //  Render quiz logic
+    // ————————————————
+    const $quiz = document.getElementById('quiz');
+    const $progress = document.getElementById('progress');
+    const $result = document.getElementById('result');
+    const $submit = document.getElementById('submit');
+    const $reset = document.getElementById('reset');
+
+    function render() {
+      $quiz.innerHTML = '';
+      QUESTIONS.forEach((it, idx) => {
+        const qId = `q${idx+1}`;
+        const wrap = document.createElement('div');
+        wrap.className = 'q';
+        wrap.innerHTML = `
+          <div class="meta">Categorie: <strong>${it.cat}</strong> · Vraag ${idx+1} van ${QUESTIONS.length}</div>
+          <h3>${it.q}</h3>
+          <div class="options">
+            ${Object.entries(it.opts).map(([key, val]) => `
+              <label class="opt" for="${qId}${key}">
+                <input type="radio" id="${qId}${key}" name="${qId}" value="${key}" />
+                <span><strong>${key})</strong> ${val}</span>
+              </label>
+            `).join('')}
+          </div>
+        `;
+        $quiz.appendChild(wrap);
+      });
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const answered = [...document.querySelectorAll('.q')].filter(q => q.querySelector('input[type=radio]:checked')).length;
+      $progress.textContent = `${answered}/${QUESTIONS.length} beantwoord`;
+    }
+
+    function firstUnanswered() {
+      for (let i=0;i<QUESTIONS.length;i++) {
+        const qId = `q${i+1}`;
+        if (!document.querySelector(`input[name=${CSS.escape(qId)}]:checked`)) return i;
+      }
+      return -1;
+    }
+
+    function disableAll() {
+      document.querySelectorAll('input[type=radio]').forEach(el => el.disabled = true);
+      $submit.disabled = true;
+    }
+
+    function enableAll() {
+      document.querySelectorAll('input[type=radio]').forEach(el => el.disabled = false);
+      $submit.disabled = false;
+      $result.hidden = true;
+    }
+
+    function resetAll() {
+      document.querySelectorAll('input[type=radio]:checked').forEach(el => el.checked = false);
+      document.querySelectorAll('.perq').forEach(el => el.remove());
+      enableAll();
+      updateProgress();
+      window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+
+    function grade() {
+      let score = 0;
+      // clear previous per-question feedback
+      document.querySelectorAll('.perq').forEach(el => el.remove());
+
+      QUESTIONS.forEach((it, idx) => {
+        const qId = `q${idx+1}`;
+        const chosen = document.querySelector(`input[name=${CSS.escape(qId)}]:checked`);
+        const correctLetter = it.a;
+        const correctText = it.opts[correctLetter];
+        const host = $quiz.children[idx];
+
+        const box = document.createElement('div');
+        box.className = 'perq';
+        if (chosen && chosen.value === correctLetter) {
+          score++;
+          box.innerHTML = `<div class="badge ok">✓ Goed</div> <span class="muted">Juiste optie: <span class="key">${correctLetter}) ${correctText}</span></span>`;
+        } else {
+          const user = chosen ? `${chosen.value}) ${it.opts[chosen.value]}` : '—';
+          box.innerHTML = `<div class="badge ko">✗ Fout</div> <span class="muted">Jouw keuze: <span class="key">${user}</span></span><br><span>Juiste antwoord: <span class="key">${correctLetter}) ${correctText}</span></span>`;
+        }
+        host.appendChild(box);
+      });
+
+      const pct = Math.round((score / QUESTIONS.length) * 100);
+      $result.hidden = false;
+      $result.innerHTML = `
+        <strong>Score</strong><br>
+        Je scoorde <strong>${score}</strong> van de <strong>${QUESTIONS.length}</strong> vragen (<strong>${pct}%</strong>).
+        <div class="stat">
+          <div><span class="badge ${pct>=80? 'ok': pct>=60? 'warn' : 'ko'}">${pct}%</span> Behaalde percentage</div>
+          <div><span class="badge">${new Date().toLocaleDateString('nl-NL')}</span> Ingevuld op</div>
+        </div>
+      `;
+    }
+
+    // Wire up
+    render();
+    document.addEventListener('change', (e) => {
+      if (e.target.matches('input[type=radio]')) updateProgress();
+    });
+
+    $submit.addEventListener('click', () => {
+      const i = firstUnanswered();
+      if (i !== -1) {
+        document.querySelectorAll('.q')[i].scrollIntoView({behavior:'smooth', block:'center'});
+        $result.hidden = false;
+        $result.innerHTML = '<span class="badge warn">Let op</span> Je hebt nog niet alle vragen beantwoord.';
+        return;
+      }
+      grade();
+      disableAll();
+      $result.scrollIntoView({behavior:'smooth', block:'start'});
+    });
+
+    $reset.addEventListener('click', resetAll);
+  </script>
+</body>
+</html>
